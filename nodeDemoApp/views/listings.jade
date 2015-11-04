@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  script(src='/javascripts/listings.js')
+  // Wrapper
+  #wrapper
+    // LISTINGS
+    h2 Current listings
+    #currentListings.list
+        table
+            thead
+                th Item
+                th Type
+                th Location
+                th Price
+            tbody
+    // /LISTINGS
+  // /WRAPPER
