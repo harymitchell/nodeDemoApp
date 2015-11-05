@@ -4,6 +4,10 @@ var passport = require('passport-google-oauth');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  //if (req.user) {
+  //  console.log (req.user)
+  //  console.log ("image "+req.user._json.image.url)
+  //}
   res.render('index', { title: 'E-Shoppe Welcome', user: req.user });
 });
 
@@ -58,16 +62,14 @@ router.post('/listings/postItemToCart/:id', function(req, res) {
  * POST to listings
  */
 router.post('/postItem', function(req, res) {
-  // TODO
-    var item = req.params.id;
-    console.log ("todo: add item to cart:"+item)
     var db = req.db;
-    var collection = db.get('userlist');
-    //collection.insert(req.body, function(err, result){
-    //    res.send(
-    //        (err === null) ? { msg: '' } : { msg: err }
-    //    );
-    //});
+    var collection = db.get('listings');
+    console.log (req.body)
+    collection.insert(req.body, function(err, result){
+        res.send(
+            (err === null) ? { msg: '' } : { msg: err }
+        );
+    });
 });
 
 module.exports = router;

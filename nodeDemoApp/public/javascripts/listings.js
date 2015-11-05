@@ -25,7 +25,7 @@ function populateTable() {
         // For each item in our JSON, add a table row and cells to the content string
         $.each(data, function(){
             tableContent += '<tr>';
-            tableContent += '<td>' + this.item + '</td>';
+            tableContent += '<td>' + this.name + '</td>';
             tableContent += '<td>' + this.type + '</td>';
             tableContent += '<td>' + this.location + '</td>';
             tableContent += '<td>' + this.price + '</td>';

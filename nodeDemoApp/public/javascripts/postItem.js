@@ -26,6 +26,7 @@ function postItem(event) {
             'location': $('#postItem fieldset input#inputItemLocation').val(),
             'price': $('#postItem fieldset input#inputItemPrice').val()
         }
+        console.log (newItem)
 
         // Use AJAX to post the object to our postItem service
         $.ajax({
@@ -40,9 +41,6 @@ function postItem(event) {
 
                 // Clear the form inputs
                 $('#postItem fieldset input').val('');
-
-                // Update the table
-                populateTable();
 
             }
             else {
