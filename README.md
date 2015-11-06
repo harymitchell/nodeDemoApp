@@ -23,9 +23,11 @@ TODO:  create user in DB when logging in for first time.
 
 ## GET
 Listings and Users can be read from the database.
+User's shopping cart is viewable from the home page when logged in.
 
 ## PUT
 Listings and Users can be added to the database.
+Listings can be added to a User's shopping cart.
 
 ## DELETE
 Listings and Users can be deleted from the database.
