@@ -5,7 +5,7 @@ var userListData = [];
 $(document).ready(function() {
 
     // Populate the user table on initial page load
-    populateTable();
+    populateUserTable();
     // Username link click
     $('#userList table tbody').on('click', 'td a.linkshowuser', showUserInfo);
     // Add User button click
@@ -17,8 +17,8 @@ $(document).ready(function() {
 
 // Functions =============================================================
 
-// Fill table with data
-function populateTable() {
+// Fill user table with data
+function populateUserTable() {
 
     // Empty content string
     var tableContent = '';
@@ -89,7 +89,7 @@ function addUser(event) {
             'gender': $('#addUser fieldset input#inputUserGender').val()
         }
 
-        // Use AJAX to post the object to our adduser service
+        // Use AJAX POST to add user to database
         $.ajax({
             type: 'POST',
             data: newUser,
@@ -97,21 +97,16 @@ function addUser(event) {
             dataType: 'JSON'
         }).done(function( response ) {
 
-            // Check for successful (blank) response
+            // Check for successful response
             if (response.msg === '') {
-
-                // Clear the form inputs
+                // Clear the form
                 $('#addUser fieldset input').val('');
-
-                // Update the table
-                populateTable();
-
+                // Update the user table
+                populateUserTable();
             }
             else {
-
-                // If something goes wrong, alert the error message that our service returned
+                // Aler the error message
                 alert('Error: ' + response.msg);
-
             }
         });
     }
@@ -147,7 +142,7 @@ function deleteUser(event) {
             }
 
             // Update the table
-            populateTable();
+            populateUserTable();
 
         });
 

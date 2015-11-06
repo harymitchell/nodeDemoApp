@@ -49,7 +49,7 @@ passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 
-var routes = require('./routes/index');
+var routes = require('./routes/routes');
 var users = require('./routes/users');
 
 var app = express();
