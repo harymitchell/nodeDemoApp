@@ -18,8 +18,7 @@ Issue command "npm start"
 This web app is a very basic demonstration of a number of web development concepts:
 
 ## Authentication
-Users can authenticate using Google Plus.  
-TODO:  create user in DB when logging in for first time.
+Users can authenticate using Google Plus, and a user is created in DB when logging in for first time.
 
 ## GET
 Listings and Users can be read from the database.
