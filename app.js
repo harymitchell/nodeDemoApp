@@ -88,8 +88,34 @@ app.get('/auth/google',
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
-    console.log ("authenticated req: "+req)
-    console.log ("authenticated res: "+res)
+    console.log ("is authenticated req: "+req.isAuthenticated())
+    console.log ("user: "+ req.user)
+    if (req.isAuthenticated() || req.user) {
+      console.log ("id: "+req.user.id)
+      var collection = db.get('userlist');
+      collection.findOne({"id": String(req.user.id)}, function (err, o) {
+            if (err) {
+              console.log (err)
+            }else{
+              if (o){
+                console.log ("found: "+o)
+              }else{
+                console.log ("adding user")
+                var user = {
+                  'id': String(req.user.id),
+                  'username': req.user.displayName,
+                  'email' : "",
+                  'fullname' : req.user.name.formatted,
+                  'gender' : req.user.gender
+                }
+                console.log (user)
+                collection.insert(user, function(err, result){
+                    console.log ("result of insert:"+result)
+                  });
+               }                    
+              }
+          });
+    }
     res.redirect('/');
   });
 

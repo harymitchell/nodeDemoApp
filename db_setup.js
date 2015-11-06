@@ -22,22 +22,29 @@ userlist_collection.remove(function(err, result){
         (err === null) ? { msg: '' } : { msg: err }
     );
 });
-userlist_collection.insert({'username' : 'elee','email' : 'edlee@gmail.com','fullname' : 'Ed Lee','age' : 21,'location' : 'ATL','gender' : 'Male'}, function(err, result){
+userlist_collection.insert({'id':'1','username' : 'elee','email' : 'edlee@gmail.com','fullname' : 'Ed Lee','age' : 21,'location' : 'ATL','gender' : 'Male'}, function(err, result){
     console.log(
         (err === null) ? { msg: '' } : { msg: err }
     );
 });
-userlist_collection.insert({'username' : 'byoung','email' : 'byoung@gmail.com','fullname' : 'Bing Young','age' : 21,'location' : 'ATL','gender' : 'Male'}, function(err, result){
+userlist_collection.insert({'id':'2','username' : 'byoung','email' : 'byoung@gmail.com','fullname' : 'Bing Young','age' : 21,'location' : 'ATL','gender' : 'Male'}, function(err, result){
     console.log(
         (err === null) ? { msg: '' } : { msg: err }
     );
 });
-userlist_collection.insert({'username' : 'hmat','email' : 'hat@gmail.com','fullname' : 'Harold Mat','age' : 23,'location' : 'ATL','gender' : 'Male'}, function(err, result){
+userlist_collection.insert({'id':'3','username' : 'hmat','email' : 'hat@gmail.com','fullname' : 'Harold Mat','age' : 23,'location' : 'ATL','gender' : 'Male'}, function(err, result){
     console.log(
         (err === null) ? { msg: '' } : { msg: err }
     );
-    process.exit()
 });
+userlist_collection.update(
+          {'id': '3'},
+          {
+            $set: {"userame": "BILLY!"},
+            upsert: true
+          }, function(err, result){
+            console.log ("result:"+result)
+      });  
 
 //
 // Build test listings
@@ -57,4 +64,5 @@ listing_collection.insert({'name' : 'sweet ride','type' : 'moped','price' : '$30
     console.log(
         (err === null) ? { msg: '' } : { msg: err }
     );
+    process.exit()
 });
