@@ -9,7 +9,7 @@ var session      = require('express-session');
 // Database
 var mongo = require('mongodb')
   , monk = require('monk')
-  , db = monk('mongodb://nodeDemo1:nodeDemo1@ds051524.mongolab.com:51524/heroku_45vvw6fm');
+  , db = monk('mongodb://ds051524.mongolab.com:51524/heroku_45vvw6fm');
 
 // OAuth
 var passport = require('passport')
