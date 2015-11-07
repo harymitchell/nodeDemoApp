@@ -46,6 +46,7 @@ function postItem(event) {
             else {
 
                 // If something goes wrong, alert the error message that our service returned
+                console.log (response.msg)
                 alert('Error: ' + response.msg);
 
             }
