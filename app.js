@@ -7,9 +7,21 @@ var bodyParser = require('body-parser');
 var flash    = require('connect-flash');
 var session      = require('express-session');
 // Database
+var mongoose = require('mongoose')
 var mongo = require('mongodb')
-  , monk = require('monk')
-  , db = monk('mongodb://ds051524.mongolab.com:51524/heroku_45vvw6fm');
+  , MongoClient = mongo.MongoClient
+  , assert = require('assert');
+//  , db = monk('mongodb://ds051524.mongolab.com:51524/heroku_45vvw6fm');
+var db;
+
+var url = 'mongodb://localhost:27017/nodeDemo';
+var db = mongoose.connect(url, function (err, res){
+    if (err) {
+        console.log ('ERROR connecting to: ' + url + '.'+err);
+    } else {
+        console.log ('Connected to: ' + url);
+    }
+});
 
 // OAuth
 var passport = require('passport')
@@ -92,7 +104,7 @@ app.get('/auth/google/callback',
     console.log ("user: "+ req.user)
     if (req.isAuthenticated() || req.user) {
       console.log ("id: "+req.user.id)
-      var collection = db.get('userlist');
+      var collection = db.collection('userlist');
       collection.findOne({"id": String(req.user.id)}, function (err, o) {
             if (err) {
               console.log (err)

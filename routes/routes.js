@@ -37,7 +37,7 @@ router.get('/admin', function(req, res, next) {
  */
 router.get('/listings/currentListings', function(req, res) {
     var db = req.db;
-    var collection = db.get('listings');
+    var collection = db.collection('listings');
     collection.find({},{},function(e,docs){
         res.json(docs);
     });
@@ -50,8 +50,8 @@ router.get('/listings/currentListings', function(req, res) {
 router.get('/listings/cart', function(req, res) {
     if (req.user) {
       var db = req.db;
-      var listing_collection = db.get('listings');
-      var userlist_collection = db.get('userlist');
+      var listing_collection = db.collection('listings');
+      var userlist_collection = db.collection('userlist');
       console.log("getting cart for "+req.user.id)
       userlist_collection.findOne(
           {'id':req.user.id},
@@ -84,7 +84,7 @@ router.post('/listings/postItemToCart/:id', function(req, res) {
       var itemId = ObjectId(itemId);
       var db = req.db;
       console.log ("add item to cart for user id: "+req.user.id)
-      var userlist_collection = db.get('userlist');
+      var userlist_collection = db.collection('userlist');
       // Check for duplicate
       userlist_collection.findOne(
           {'id':req.user.id},
@@ -128,7 +128,7 @@ router.post('/listings/postItemToCart/:id', function(req, res) {
  */
 router.post('/postItem', function(req, res) {
     var db = req.db;
-    var collection = db.get('listings');
+    var collection = db.collection('listings');
     console.log (req.body)
     collection.insert(req.body, function(err, result){
         res.send(
