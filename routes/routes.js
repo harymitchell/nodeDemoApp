@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport-google-oauth')
 var ObjectId = require('mongodb').ObjectID
+var userModel = require('../models/user').userModel
+var itemModel = require('../models/item').itemModel
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -36,10 +38,11 @@ router.get('/admin', function(req, res, next) {
  * GET Current listings.
  */
 router.get('/listings/currentListings', function(req, res) {
-    var db = req.db;
-    var collection = db.collection('listings');
-    collection.find({},{},function(e,docs){
-        res.json(docs);
+    console.log ("getting current items ")
+    itemModel.find({}, function(err, items) {
+        if (err) console.log (err)
+        console.log ("found items: "+items)
+        res.send(items);
     });
 });
 
@@ -49,26 +52,24 @@ router.get('/listings/currentListings', function(req, res) {
  */
 router.get('/listings/cart', function(req, res) {
     if (req.user) {
-      var db = req.db;
-      var listing_collection = db.collection('listings');
-      var userlist_collection = db.collection('userlist');
+
       console.log("getting cart for "+req.user.id)
-      userlist_collection.findOne(
+      userModel.findOne(
           {'id':req.user.id},
           function(e,docs){
-              console.log("cart: "+docs['cart'])
               if (docs['cart']) {
-                var ids = docs['cart'].map(function(id) { return ObjectId(id); });
+                console.log("cart: " + docs['cart'])
+                var ids = docs['cart']//.map(function(id) { return ObjectId(id); });
                 console.log("type ids: "+typeof(ids))
                 console.log(ids)
-                listing_collection.find(
+                itemModel.find(
                     {_id: {$in:ids}},
                     function(e, docs){
                         console.log (docs) 
                         res.json(docs);   
                     });
-              }
-      });
+               }
+             });
     }else{
       console.log ("No user found.")
     }
@@ -78,20 +79,18 @@ router.get('/listings/cart', function(req, res) {
  * POST to user cart.
  */
 router.post('/listings/postItemToCart/:id', function(req, res) {
-  // TODO
     if (req.user) {
       var item = req.params.id;
       var itemId = ObjectId(itemId);
       var db = req.db;
       console.log ("add item to cart for user id: "+req.user.id)
-      var userlist_collection = db.collection('userlist');
       // Check for duplicate
-      userlist_collection.findOne(
+      userModel.findOne(
           {'id':req.user.id},
-          function(e,docs){
-              console.log("cart: "+docs['cart'])
-              if (docs['cart']) {
-                var ids = docs['cart'].map(function(id) { return id; });
+          function(e,doc){
+              if (doc['cart']) {
+                console.log("cart: "+doc['cart'])
+                var ids = doc['cart'].map(function(id) { return String(id); });
                 var item_in_ids = false;
                 for (i in ids){
                   if (ids[i] === item) {
@@ -105,7 +104,7 @@ router.post('/listings/postItemToCart/:id', function(req, res) {
               }
               if (!item_in_ids){
                 console.log ("adding item to cart!")
-                userlist_collection.update(
+                userModel.update(
                       {'id': req.user.id},
                       {
                         $push: {"cart": item}
@@ -116,7 +115,8 @@ router.post('/listings/postItemToCart/:id', function(req, res) {
               }else{
                 res.send ({ msg: "This item was already in your cart!"})
               }
-      });
+          }
+      );
  
     }else{
       console.log ("No user found.")
@@ -127,14 +127,31 @@ router.post('/listings/postItemToCart/:id', function(req, res) {
  * POST to listings
  */
 router.post('/postItem', function(req, res) {
-    var db = req.db;
-    var collection = db.collection('listings');
-    console.log (req.body)
-    collection.insert(req.body, function(err, result){
-        res.send(
-            (err === null) ? { msg: '' } : { msg: err }
-        );
+    console.log ("adding item to listings: "+req.body)
+    var newItem = new itemModel(req.body);
+    if (currentUser(req.user)) {
+      console.log ("new item will belong to: "+currentUser._id)
+      newItem.ownerId = currentUser._id
+    }
+    newItem.save(function(err) {
+      if (err) console.log (err)
+      res.send(
+        (err === null) ? { msg: '' } : { msg: err }
+      );
     });
 });
+
+// TODO:  does this belong here?
+currentUser = function(user){
+  if (user){
+    userModel.findOne(
+      {'id':user},
+      function(e,doc){
+        return doc
+      });
+  }else{
+    console.log ("'currentUser': no user logged in.")
+  }
+}
 
 module.exports = router;

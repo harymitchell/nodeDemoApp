@@ -1,4 +1,5 @@
 var userModel = require('../models/user').userModel
+var itemModel = require('../models/item').itemModel
 var mongoose = require('mongoose')
 
 var url = 'mongodb://localhost:27017/nodeDemo';
@@ -10,7 +11,8 @@ var db = mongoose.connect(url, function (err, res){
     }
     // Tests.
     console.log ("starting tests")
-    testUsers()
+    // testUsers()
+    testItems()
 });
 
 var testUsers = function(){
@@ -24,7 +26,6 @@ var testUsers = function(){
 	newUser.age = '33'
 	newUser.location = 'ATL'
 	newUser.gender = 'M'
-	newUser.cart = ["item", "item2"]
 
 	newUser.save(function(err) {
 		if (err) throw err;
@@ -69,5 +70,55 @@ var testUsers = function(){
 }
 
 var testItems = function(){
+
+	// Owner
+	var newUser = new userModel({
+		name: 'jason',
+		email: 'jason@gmail'	
+	});
+	newUser.save(function(err) {
+		if (err) throw err;
+		userModel.findOne({'name': 'jason'}, {}, function(err, user) {
+			if (err) throw err;
+			console.log ("user: "+user)
+		});	
+	});
+
+	var json = {
+		name: "neon",
+		type:  "sedan",
+		price: 1000,
+		location: "ATL",
+		ownerId: newUser._id
+	}
+	var newItem = new itemModel(json)
+	newItem.save(function(err) {
+		if (err) throw err;
+		itemModel.findOne({'name': 'neon'}, {ownerId:1}, function(err, item) {
+			if (err) throw err;
+			console.log ("item: "+item)
+		});	
+	});
+
+	// Owner
+	var newUser2 = new userModel({
+		name: 'rick',
+		email: 'rickk@gmail',
+		cart: [newItem._id]		
+	});
+	newUser2.save(function(err) {
+		if (err) throw err;
+		userModel.findOne({'name': 'rick'}, {}, function(err, user) {
+			if (err) throw err;
+			console.log ("user: "+user)
+			newUser2.remove(function(err,removed) {
+			});
+			newItem.remove(function(err,removed) {
+			});
+			newUser.remove(function(err,removed) {
+			});
+		});	
+	});
+
 
 }

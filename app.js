@@ -11,9 +11,9 @@ var mongoose = require('mongoose')
 var mongo = require('mongodb')
   , MongoClient = mongo.MongoClient
   , assert = require('assert');
-var remote_uri = 'mongodb://heroku_45vvw6fm:heroku_45vvw6fm@ds051524.mongolab.com:51524/heroku_45vvw6fm'
+var remote_uri = 'mongodb://test1:test1@ds051524.mongolab.com:51524/heroku_45vvw6fm'
 var url = 'mongodb://localhost:27017/nodeDemo';
-url = remote_uri
+var url = remote_uri
 var db = mongoose.connect(url, function (err, res){
     if (err) {
         console.log ('ERROR connecting to: ' + url + '.'+err);
@@ -21,6 +21,9 @@ var db = mongoose.connect(url, function (err, res){
         console.log ('Connected to: ' + url);
     }
 });
+// Models
+var userModel = require('./models/user').userModel
+var itemModel = require('./models/item').itemModel
 
 // OAuth
 var passport = require('passport')
@@ -103,26 +106,27 @@ app.get('/auth/google/callback',
     console.log ("user: "+ req.user)
     if (req.isAuthenticated() || req.user) {
       console.log ("id: "+req.user.id)
-      var collection = db.collection('userlist');
-      collection.findOne({"id": String(req.user.id)}, function (err, o) {
+      console.log ("user: "+JSON.stringify(req.user))
+      userModel.findOne({
+          "id": String(req.user.id)}, 
+          function (err, o) {
             if (err) {
               console.log (err)
             }else{
               if (o){
                 console.log ("found: "+o)
               }else{
-                console.log ("adding user")
-                var user = {
+                console.log ("adding new user")
+                var newUser = new userModel({
                   'id': String(req.user.id),
                   'username': req.user.displayName,
                   'email' : "",
                   'fullname' : req.user.name.formatted,
-                  'gender' : req.user.gender
-                }
-                console.log (user)
-                collection.insert(user, function(err, result){
-                    console.log ("result of insert:"+result)
-                  });
+                  'gender' : req.u
+                })
+                newUser.save(function(err) {
+                  if (err) console.log (err)
+                });
                }                    
               }
           });

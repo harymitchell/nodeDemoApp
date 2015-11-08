@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
+  id: String,
   name: String,
   username:  String,
   email: String,
@@ -9,7 +10,7 @@ var userSchema = new Schema({
   age: Number,
   location: String,
   gender: String,
-  cart: []
+  cart: [Schema.Types.ObjectId]
 });
 
 var userModel = mongoose.model('users', userSchema);
