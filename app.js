@@ -11,15 +11,15 @@ var mongoose = require('mongoose')
 var mongo = require('mongodb')
   , MongoClient = mongo.MongoClient
   , assert = require('assert');
-  
+
 var remote_uri = 'mongodb://test1:test1@ds051524.mongolab.com:51524/heroku_45vvw6fm'
 var url = 'mongodb://localhost:27017/nodeDemo';
 var url = remote_uri
 var db = mongoose.connect(url, function (err, res){
     if (err) {
-        console.log ('ERROR connecting to: ' + url + '.'+err);
+        console.log ('ERROR while connecting to: ' + url + '.'+err);
     } else {
-        console.log ('Connected to: ' + url);
+        console.log ('Success! Connected to: ' + url);
     }
 });
 // Models
