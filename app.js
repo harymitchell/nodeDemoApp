@@ -13,6 +13,7 @@ var mongo = require('mongodb')
   , assert = require('assert');
 var remote_uri = 'mongodb://heroku_45vvw6fm:heroku_45vvw6fm@ds051524.mongolab.com:51524/heroku_45vvw6fm'
 var url = 'mongodb://localhost:27017/nodeDemo';
+url = remote_uri
 var db = mongoose.connect(url, function (err, res){
     if (err) {
         console.log ('ERROR connecting to: ' + url + '.'+err);
