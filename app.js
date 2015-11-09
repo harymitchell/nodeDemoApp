@@ -147,7 +147,7 @@ app.get('/logout', function(req, res){
 });
 
 // IO
-var server = app.listen(3000);
+var server = app.listen(process.env.PORT || 3000)
 var io = require('socket.io').listen(server);
 io.use(function(socket, next) {
     sessionMiddleware(socket.request, socket.request.res, next);
