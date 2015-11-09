@@ -1,0 +1,19 @@
+extends layout
+
+block content
+	script(src="/socket.io/socket.io.js")
+	script(src='/javascripts/chat.js')
+	script(src="https://cdn.socket.io/socket.io-1.2.0.js")
+	// Wrapper
+	#wrapper
+
+		#chatBox
+			ul#messages
+				li Test message 1
+				li Test message 2
+
+			form
+				input#inputMessage(type='text', placeholder='Type Message Here')
+				button#button Send
+
+	// / Wrapper

@@ -11,10 +11,9 @@ var mongoose = require('mongoose')
 var mongo = require('mongodb')
   , MongoClient = mongo.MongoClient
   , assert = require('assert');
-
 var remote_uri = 'mongodb://test1:test1@ds051524.mongolab.com:51524/heroku_45vvw6fm'
 var url = 'mongodb://localhost:27017/nodeDemo';
-var url = remote_uri
+// var url = remote_uri
 var db = mongoose.connect(url, function (err, res){
     if (err) {
         console.log ('ERROR while connecting to: ' + url + '.'+err);
@@ -67,13 +66,18 @@ passport.deserializeUser(function(obj, done) {
 var routes = require('./routes/routes');
 var users = require('./routes/users');
 
+//App
 var app = express();
+
+//Session
+var sessionMiddleware = session({ 
+                  secret: 'shazaam',
+                  resave: 'false',
+                  saveUninitialized: 'false' });
 
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
-app.use(session({ secret: 'shazaam',
-                  resave: 'false',
-                  saveUninitialized: 'false' }));
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
@@ -135,10 +139,29 @@ app.get('/auth/google/callback',
     res.redirect('/');
   });
 
+// Logout
 app.get('/logout', function(req, res){
   console.log ("logout req: "+req)
   req.logout();
   res.redirect('/');
+});
+
+// IO
+var server = app.listen(3000);
+var io = require('socket.io').listen(server);
+io.use(function(socket, next) {
+    sessionMiddleware(socket.request, socket.request.res, next);
+});
+io.on('connection', function(socket){      
+    console.log('a user connected: '+ JSON.stringify(socket.request.session));
+    socket.on('chat message', function(msg){
+      msg = socket.request.session.passport.user.displayName + ": " + msg
+      console.log('message: ' + msg);
+      io.emit('chat message', msg);
+    });
+    socket.on('disconnect', function(){
+      console.log('user disconnected');
+    });
 });
 
 // view engine setup
@@ -193,7 +216,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
 module.exports = app;
 
 // Simple route middleware to ensure user is authenticated.
@@ -207,3 +229,4 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
   res.redirect('/login');
 }
+

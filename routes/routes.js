@@ -34,6 +34,11 @@ router.get('/admin', function(req, res, next) {
   res.render('admin', { title: 'E-Shoppe Admin' });
 });
 
+/* GET chat page. */
+router.get('/chat', function(req, res, next) {
+  res.render('chat', { title: 'E-Shoppe Chat' });
+});
+
 /*
  * GET Current listings.
  */
@@ -129,24 +134,41 @@ router.post('/listings/postItemToCart/:id', function(req, res) {
 router.post('/postItem', function(req, res) {
     console.log ("adding item to listings: "+req.body)
     var newItem = new itemModel(req.body);
-    if (currentUser(req.user)) {
-      console.log ("new item will belong to: "+currentUser._id)
-      newItem.ownerId = currentUser._id
+    if (req.user) {
+      console.log ("retrieving user for id "+req.user.id)
+      userModel.findOne(
+        {'id':req.user.id},
+        function(e,doc){
+          console.log ("new item will belong to: "+doc._id)
+          newItem.ownerId = doc._id
+          saveItemAndRespond(newItem, res)
+        });
+    }else{
+      console.log ("anon add item")
+      saveItemAndRespond(newItem, res)
     }
-    newItem.save(function(err) {
+});
+
+
+saveItemAndRespond = function(item, res){
+    // Saves item and sends res as a response.
+    console.log("in saveItemAndRespond")
+    item.save(function(err) {
       if (err) console.log (err)
       res.send(
         (err === null) ? { msg: '' } : { msg: err }
       );
     });
-});
+  };
 
 // TODO:  does this belong here?
 currentUser = function(user){
   if (user){
+    console.log("looking for user for id: "+user.id)
     userModel.findOne(
-      {'id':user},
+      {'id':user.id},
       function(e,doc){
+        console.log("found user: "+doc)
         return doc
       });
   }else{
