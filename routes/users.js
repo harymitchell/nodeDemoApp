@@ -34,12 +34,12 @@ router.post('/adduser', function(req, res) {
  * DELETE to deleteuser.
  */
 router.delete('/deleteuser/:id', function(req, res) {
-    var db = req.db;
-    var collection = db.collection('userlist');
-    var userToDelete = req.params.id;
-    collection.remove({ '_id' : userToDelete }, function(err) {
-        res.send((err === null) ? { msg: '' } : { msg:'error: ' + err });
-    });
+    console.log ("attempting to delete user: "+req.params.id)
+    userModel.find({'_id':req.params.id}).remove(
+        function(e){
+            if (e) console.log (e)
+            res.send((e === null) ? { msg: '' } : { msg:'error: ' + e });
+        });
 });
 
 module.exports = router;

@@ -11,9 +11,8 @@ var mongoose = require('mongoose')
 var mongo = require('mongodb')
   , MongoClient = mongo.MongoClient
   , assert = require('assert');
-var remote_uri = 'mongodb://test1:test1@ds051524.mongolab.com:51524/heroku_45vvw6fm'
-var url = 'mongodb://localhost:27017/nodeDemo';
-var url = remote_uri
+// var remote_uri = 'mongodb://test1:test1@ds051524.mongolab.com:51524/heroku_45vvw6fm'
+var url = (process.env.MONGOLAB_URI || 'mongodb://localhost:27017/nodeDemo');
 var db = mongoose.connect(url, function (err, res){
     if (err) {
         console.log ('ERROR while connecting to: ' + url + '.'+err);
@@ -152,15 +151,29 @@ var io = require('socket.io').listen(server);
 io.use(function(socket, next) {
     sessionMiddleware(socket.request, socket.request.res, next);
 });
-io.on('connection', function(socket){      
-    console.log('a user connected: '+ JSON.stringify(socket.request.session));
+var chatHistory = [] // history of chat for server.
+io.on('connection', function(socket){
+    sessionString = JSON.stringify(socket.request.session)
+    console.log('a user connected: '+ sessionString);
+    if (socket.request.session.passport && socket.request.session.passport.user.displayName){
+      io.emit('chat message', socket.request.session.passport.user.displayName + " has entered.");      
+    }
     socket.on('chat message', function(msg){
-      msg = socket.request.session.passport.user.displayName + ": " + msg
-      console.log('message: ' + msg);
+      if (socket.request.session.passport){
+        msg = socket.request.session.passport.user.displayName + ": " + msg
+      }else{
+        msg = "Anonymous: " + msg
+      }
+      chatHistory.push (msg)
+      console.log ("Chat history: "+chatHistory)
+      console.log('Chat message >' + msg);
       io.emit('chat message', msg);
     });
     socket.on('disconnect', function(){
-      console.log('user disconnected');
+      console.log('user disconnected: '+sessionString);
+      if (socket.request.session.passport && socket.request.session.passport.user){
+        io.emit('chat message', socket.request.session.passport.user.displayName + " has left.");      
+      }
     });
 });
 
@@ -179,6 +192,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Make our db accessible to our router
 app.use(function(req,res,next){
     req.db = db;
+    req.chatHistory = chatHistory;
     next();
 });
 app.use('/', routes);

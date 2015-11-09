@@ -36,7 +36,7 @@ router.get('/admin', function(req, res, next) {
 
 /* GET chat page. */
 router.get('/chat', function(req, res, next) {
-  res.render('chat', { title: 'E-Shoppe Chat' });
+  res.render('chat', { title: 'E-Shoppe Chat', chatHistory: req.chatHistory || [] });
 });
 
 /*
