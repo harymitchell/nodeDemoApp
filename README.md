@@ -1,5 +1,5 @@
 # nodeDemoApp
-Demo app using node.js, express, mongodb. 
+Demo app using node.js, express, mongodb, and more. Public facing here: http://arcane-hollows-8416.herokuapp.com/
 
 # Getting Started
 
@@ -43,8 +43,11 @@ Logged in users have their Google Plus image displayed.
 ## Database Engine
 Uses MongoDB for now. 
 
-## ORM
-TODO:  Could switch to using Mongoose node package when the model starts to flesh out more.
+## ODM
+Mongoose used for schemas and models.
+
+## Sockets
+Socket.io is used in the chat module of this app. 
 
 ## Package Management
 Node package management is very simple.  All needed packages are in the package.json.  Run npm install to fetch.
