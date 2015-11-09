@@ -6,7 +6,8 @@ block content
 	script(src="https://cdn.socket.io/socket.io-1.2.0.js")
 	// Wrapper
 	#wrapper
-
+		h1 Live Chat
+	
 		#chatBox
 			ul#messages
 				each val in chatHistory
@@ -18,5 +19,5 @@ block content
 			form
 				input#inputMessage(type='text', placeholder='Type Message Here')
 				button#button Send
-
+	
 	// / Wrapper

@@ -1,33 +1,46 @@
 doctype html
-html
+html(lang='en')
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='/javascripts/jquery-2.1.4.min.js')
-  
-  // Navi bar
-  div(class="nav")
-    ul
-      li 
-        a(href='/login') Login
-      li 
-        a(href='/logout') Log off
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css", integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==", crossorigin="anonymous")
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css", integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX", crossorigin="anonymous")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js", integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==", crossorigin="anonymous")
     
   body
-    div(class="title")
-      h1= title
-      
-    div(class="sideBar")
-      ul
-        li
-          a(href='/') Home
-        li
-          a(href='/listings') Browse Items
-        li
-          a(href='/postItem') Post Item
-        li
-          a(href='/chat') Chat
-        li
-          a(href='/admin') Admin
-  
-    block content
+    nav.navbar.navbar-inverse.navbar-fixed-top
+      .container-fluid
+        .navbar-header
+          button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href='#')= title
+        #navbar.navbar-collapse.collapse
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(href='/login') Login
+            li
+              a(href='/logout') Log off
+          // Search bar
+            form.navbar-form.navbar-right
+            input.form-control(type='text', placeholder='Search...')
+          // / Search bar
+    .container-fluid
+      .row
+        .col-sm-3.col-md-2.sidebar
+          ul.nav.nav-sidebar
+            li.active
+              a(href='/') Home
+                span.sr-only (current)
+            li
+              a(href='/listings') Browse Items
+            li
+              a(href='/postItem') Post Item
+            li
+              a(href='/chat') Chat
+            li
+              a(href='/admin') Admin
+        block content
