@@ -9,9 +9,12 @@ block content
 
 		#chatBox
 			ul#messages
+				each val in chatHistory
+					li= val
+			// Test messages
 				li Test message 1
 				li Test message 2
-
+			// / Test messages
 			form
 				input#inputMessage(type='text', placeholder='Type Message Here')
 				button#button Send
